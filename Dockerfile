@@ -5,4 +5,4 @@ COPY package.json .
 RUN npm i --omit=dev
 COPY . .
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "prod"]
