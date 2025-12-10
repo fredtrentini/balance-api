@@ -1,4 +1,5 @@
 export interface AccountRepository {
-    getBalance(accountId: number): Promise<number | null>;
-    setBalance(accountId: number, balance: number): Promise<void>;
+    getBalance(accountId: string): Promise<number | null>;
+    setBalance(accountId: string, balance: number): Promise<void>;
+    reset(): Promise<void>;
 }
