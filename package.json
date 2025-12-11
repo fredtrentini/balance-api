@@ -7,7 +7,8 @@
         "build": "tsc",
         "dev": "nodemon",
         "prod": "npm run build && node dist/index.js",
-        "test": "jest --watchAll"
+        "test": "jest --watchAll",
+        "test:ci": "jest"
     },
     "jest": {
         "preset": "ts-jest",
