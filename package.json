@@ -12,7 +12,11 @@
     },
     "jest": {
         "preset": "ts-jest",
-        "testEnvironment": "node"
+        "testEnvironment": "node",
+        "testPathIgnorePatterns": [
+            "<rootDir>/dist/",
+            "<rootDir>/node_modules/"
+        ]
     },
     "repository": {
         "type": "git",
