@@ -66,6 +66,17 @@ describe("GET /balance", () => {
 });
 
 describe("POST /event", () => {
+    it("validates missing payload", async () => {
+        const accountId = "123";
+        const event = { type: "invalid_event_type", destination: accountId, amount: 10 };
+
+        const response = await request(app)
+            .post("/event")
+            .expect(400);
+
+        expect(response.body.error).toBe("Missing payload");
+    });
+
     it("validates event type", async () => {
         const accountId = "123";
         const event = { type: "invalid_event_type", destination: accountId, amount: 10 };
@@ -75,7 +86,7 @@ describe("POST /event", () => {
             .send(event)
             .expect(400);
 
-        expect(response.body.error).toBe("Invalid event type");
+        expect(response.body.error).toBe("Invalid type");
     });
 
     it("validates event amount", async () => {
@@ -87,7 +98,7 @@ describe("POST /event", () => {
             .send(event)
             .expect(400);
 
-        expect(response.body.error).toBe("Invalid event amount");
+        expect(response.body.error).toBe("Invalid amount");
     });
 
     it("creates account with initial balance", async () => {
@@ -99,7 +110,7 @@ describe("POST /event", () => {
             .send(event)
             .expect(201);
 
-        expect(response.body).toBe({ destination: { id: accountId, balance: 10 } });
+        expect(response.body).toEqual({ destination: { id: accountId, balance: 10 } });
     });
 
     it("deposits into existing account", async () => {
@@ -116,7 +127,7 @@ describe("POST /event", () => {
             .send(event)
             .expect(201);
 
-        expect(response.body).toBe({ destination: { id: accountId, balance: 20 } });
+        expect(response.body).toEqual({ destination: { id: accountId, balance: 20 } });
     });
 
     it("withdraws from unexistent account", async () => {
@@ -143,7 +154,7 @@ describe("POST /event", () => {
             .send(event)
             .expect(201);
 
-        expect(response.body).toBe({ origin: { id: origin, balance: 90 } });
+        expect(response.body).toEqual({ origin: { id: origin, balance: 90 } });
     });
 
     it("withdraws amount greater than balance", async () => {
@@ -161,18 +172,6 @@ describe("POST /event", () => {
         expect(response.body.error).toBe("Amount must not be greater than balance");
     });
 
-    it("validates transfer without destination", async () => {
-        const origin = "123";
-        const event = { type: "transfer", origin, amount: 10 };
-
-        const response = await request(app)
-            .post("/event")
-            .send(event)
-            .expect(400);
-
-        expect(response.body.error).toBe("Transfer requires a destination");
-    });
-
     it("transfers from existing account", async () => {
         const origin = "123";
         const destination = "321";
@@ -186,7 +185,7 @@ describe("POST /event", () => {
             .send(event)
             .expect(201);
 
-        expect(response.body).toBe({ origin: { id: origin, balance: 90 }, destination: { id: destination, balance: 60 } });
+        expect(response.body).toEqual({ origin: { id: origin, balance: 90 }, destination: { id: destination, balance: 60 } });
     });
 
     it("transfers from unexistent account", async () => {
@@ -217,6 +216,19 @@ describe("POST /event", () => {
             .expect(404);
 
         expect(response.body).toBe(0);
+    });
+
+    it("prevents transfer if origin and destination are equal", async () => {
+        const origin = "123";
+        const destination = "123";
+        const event = { type: "transfer", origin, amount: 10, destination };
+
+        const response = await request(app)
+            .post("/event")
+            .send(event)
+            .expect(400);
+
+        expect(response.body.error).toBe("Origin and destination must be different");
     });
 });
 

@@ -26,8 +26,41 @@ export class AccountController {
         res.send(balance);
     }
 
-    createEvent = async (req: Request, res: Response) => {
-        res.send({});
+    processEvent = async (req: Request, res: Response) => {
+        if (req.body === undefined) {
+            throw new BadRequestError("Missing payload");
+        }
+
+        const { type, amount, origin, destination } = req.body;
+        const validEventTypes = ["deposit", "withdraw", "transfer"];
+
+        if (!validEventTypes.includes(type)) {
+            throw new BadRequestError("Invalid type");
+        }
+
+        if (amount === undefined || amount <= 0) {
+            throw new BadRequestError("Invalid amount");
+        }
+
+        if (type === "deposit") {
+            const updatedState = await this.accountService.deposit(destination, amount);
+
+            return res.status(201).send(updatedState);
+        }
+        
+        if (type === "withdraw") {
+            const updatedState = await this.accountService.withdraw(origin, amount);
+
+            return res.status(201).send(updatedState);
+        }
+        
+        if (type === "transfer") {
+            const updatedState = await this.accountService.transfer(origin, destination, amount);
+
+            return res.status(201).send(updatedState);
+        }
+
+        throw new Error("Unreachable code");
     }
 
     reset = async (req: Request, res: Response) => {

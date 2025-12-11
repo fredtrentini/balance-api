@@ -13,10 +13,13 @@ function createApp(options: CreateAppOptions) {
 
     const accountService = new AccountService(options.accountRepository);
     const accountController = new AccountController(accountService);
+    
+    app.use(express.json());
 
     app.get("/balance", accountController.getBalance);
-    app.post("/event", accountController.createEvent);
+    app.post("/event", accountController.processEvent);
     app.post("/reset", accountController.reset);
+
     app.use(errorHandler);
 
     return app;

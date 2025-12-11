@@ -1,7 +1,11 @@
 import { AccountRepository } from "./AccountRepository";
 
 export class InMemoryAccountRepository implements AccountRepository {
-    accountIdToBalanceMap: Record<string, number> = {};
+    private accountIdToBalanceMap: Record<string, number> = {};
+
+    constructor() {
+        this.accountIdToBalanceMap = {};
+    }
 
     async getBalance(accountId: string): Promise<number | null> {
         return this.accountIdToBalanceMap[accountId] ?? null;

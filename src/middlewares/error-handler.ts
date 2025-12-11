@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-import { BaseHttpError } from "../errors/BaseHttpError";
 import { NotFoundError } from "../errors/NotFoundError";
+import { CustomError } from "../errors/CustomError";
 
 const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err instanceof NotFoundError) {
         return res.status(err.statusCode).json(0);
     }
 
-    if (err instanceof BaseHttpError) {
-        return res.status(err.statusCode).json({
+    if (err instanceof CustomError) {
+        return res.status(400).json({
             error: err.message
         });
     }

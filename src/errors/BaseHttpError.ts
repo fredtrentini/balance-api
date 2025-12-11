@@ -1,10 +1,10 @@
-export abstract class BaseHttpError extends Error {
-    message: string;
+import { CustomError } from "./CustomError";
+
+export abstract class BaseHttpError extends CustomError {
     statusCode: number;
 
     constructor(message: string, statusCode: number) {
         super(message);
-        this.message = message;
         this.statusCode = statusCode;
     }
 }
