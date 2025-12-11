@@ -29,4 +29,10 @@ export class AccountController {
     createEvent = async (req: Request, res: Response) => {
         res.send({});
     }
+
+    reset = async (req: Request, res: Response) => {
+        await this.accountService.reset();
+
+        res.send("OK");
+    }
 }

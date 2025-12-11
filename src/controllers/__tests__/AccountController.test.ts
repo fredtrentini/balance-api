@@ -7,21 +7,17 @@ import { createApp } from "../../app";
 let app: Express;
 let accountService: AccountService;
 
+beforeEach(() => {
+    const accountRepository = new InMemoryAccountRepository();
+    
+    app = createApp({
+        accountRepository
+    });
+
+    accountService = new AccountService(accountRepository);
+});
+
 describe("GET /balance", () => {
-    beforeEach(() => {
-        const accountRepository = new InMemoryAccountRepository();
-        
-        app = createApp({
-            accountRepository
-        });
-
-        accountService = new AccountService(accountRepository);
-    });
-
-    afterEach(() => {
-        accountService.reset();
-    });
-
     it("requests balance without an account id", async () => {
         const response = await request(app)
             .get("/balance")
@@ -66,5 +62,23 @@ describe("GET /balance", () => {
             .expect(200);
 
         expect(response.body).toBe(balance);
+    });
+});
+
+describe("POST /reset", () => {
+    it("resets state", async () => {
+        const accountId = "123";
+        const balance = 100;
+
+        expect(await accountService.getBalance(accountId)).toBeNull();
+        await accountService.setBalance(accountId, balance);
+        expect(await accountService.getBalance(accountId)).toBe(balance);
+
+        const response = await request(app)
+            .post("/reset")
+            .expect(200);
+        
+        expect(await accountService.getBalance(accountId)).toBeNull();
+        expect(response.text).toBe("OK");
     });
 });

@@ -16,6 +16,7 @@ function createApp(options: CreateAppOptions) {
 
     app.get("/balance", accountController.getBalance);
     app.post("/event", accountController.createEvent);
+    app.post("/reset", accountController.reset);
     app.use(errorHandler);
 
     return app;
