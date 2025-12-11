@@ -58,13 +58,9 @@ export class AccountService {
         }
         
         const originBalance = await this.getBalance(originId);
-        const destinationBalance = await this.getBalance(destinationId);
+        const destinationBalance = await this.getBalance(destinationId) ?? 0;
 
         if (originBalance === null) {
-            throw new NotFoundError();
-        }
-
-        if (destinationBalance === null) {
             throw new NotFoundError();
         }
 

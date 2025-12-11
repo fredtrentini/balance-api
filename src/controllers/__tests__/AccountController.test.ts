@@ -213,9 +213,9 @@ describe("POST /event", () => {
         const response = await request(app)
             .post("/event")
             .send(event)
-            .expect(404);
+            .expect(201);
 
-        expect(response.body).toBe(0);
+        expect(response.body).toEqual({ origin: { id: origin, balance: 90 }, destination: { id: destination, balance: 10 } });
     });
 
     it("prevents transfer if origin and destination are equal", async () => {
