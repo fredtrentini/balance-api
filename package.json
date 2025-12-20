@@ -6,7 +6,7 @@
     "scripts": {
         "build": "tsc",
         "dev": "nodemon",
-        "prod": "npm run build && node dist/index.js",
+        "prod": "node dist/index.js",
         "test": "jest --watchAll",
         "test:ci": "jest"
     },
