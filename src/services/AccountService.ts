@@ -19,7 +19,7 @@ export class AccountService {
         const balance = await this.getBalance(accountId) ?? 0;
         const updatedBalance = balance + amount;
 
-        this.setBalance(accountId, updatedBalance);
+        await this.setBalance(accountId, updatedBalance);
 
         return {
             destination: {
